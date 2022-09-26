@@ -20,4 +20,4 @@ Files contained in this repository include:<br>
 
 ## Example
 
-![Example Image](images/example)
+![Example Image](example.png)
