@@ -18,6 +18,23 @@ Files contained in this repository include:<br>
   3. Once all servers have started, press enter (return)
   4. Send a message using: send **\<Process ID\> \<Message\>**
 
+## Important Notes
+The following functionality is commented out within main.go:<br>
+```
+/*
+			value := strings.Split(conn.RemoteAddr().String(), ":")[0]
+			fmt.Println("Connection was from: ", value)
+			var clientId string
+			for key := range hosts {
+				ip := strings.Split(hosts[key], ":")[0]
+				if ip == value {
+					clientId = key
+				}
+			} */
+```
+
+**This code would allow the unicast_receive message to display the "from process \<ID\>" value. Unfortunately this does not work when testing locally on my device (MacOS Catalina) as conn.RemoteAddr() will always return the process' specified localhost value. The above code would work for statically allocated IP addresses present on multiple devices communicating within different subnets. It is possible that the functionality is different on other operating systems who have separate techniques for routing localhost addresses. I have chosen instead to display the raw RemoteAddr() value containing the localhost IP and port the client is connecting from. 1.1.1.1 has been routed locally in the below example.**
+
 ## Example
 
 ![Example Image](example.png)
