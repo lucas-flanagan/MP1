@@ -12,12 +12,16 @@ import (
 	"time"
 )
 
+// Verify nil error values
 func check(e error) {
 	if e != nil {
 		panic(e)
 	}
 }
 
+// Imports data contained in config.txt via ioutil's ReadFile() funciton
+// Input: properly formatted config.txt
+// Output: A map containing ip/port data in the form {"ID": "IP_ADDR:PORT", "ID2": "IP_ADDR:PORT", etc}
 func read_configuration(file string) (string, string, map[string]string, []string) {
 	dat, err := ioutil.ReadFile(file)
 	check(err)
@@ -38,12 +42,17 @@ func read_configuration(file string) (string, string, map[string]string, []strin
 	return minDelay, maxDelay, hosts, ids
 }
 
+// Sleep for a random amount of time between the interval [minDelay, maxDelay] as specified in config.txt
+// This function is called in a separate goroutine. The main process blocks sending until the sleep duration has expired.
 func delay(delayed chan string) {
 	delay := rand.Intn(maxDelay-minDelay) + minDelay
 	time.Sleep(time.Duration(delay) * time.Millisecond)
 	delayed <- "resume"
 }
 
+// Send message <message> to the destination given by "IP_ADDR:PORT".
+// A TCP client is created which connects to an already listening destination
+// The message is passed over the socket via fprintf
 func unicast_send(destination string, message string, id string) {
 	delayed := make(chan string)
 	c, err := net.Dial("tcp", destination)
@@ -55,10 +64,14 @@ func unicast_send(destination string, message string, id string) {
 	fmt.Fprintf(c, message)
 }
 
+// Print the message received from the source device given by conn.LocalAddr() - func server()
+// The time of receipt is printed immediately and formatted in Unix style
 func unicast_receive(source string, message string) {
 	fmt.Printf("Received %s from process %s, system time is %s\n", message, source, time.Now().Format(time.UnixDate))
 }
 
+// Creates the TCP server that listens on the port specified in config.txt
+// Forever accepts incoming connections and transfers data to a 1024-byte buffer before passing to unicast_receive
 func server(ip string, live chan string, hosts map[string]string) {
 	l, err := net.Listen("tcp", ip)
 	check(err)
@@ -71,6 +84,8 @@ func server(ip string, live chan string, hosts map[string]string) {
 		buf := make([]byte, 1024)
 		len, err := conn.Read(buf)
 		check(err)
+		// This section of commented code implements functionality for the "from proccess <ID>" statement in unicast_receive. 
+		// See README.md for further detail on the chosen alternative.
 		/*
 			value := strings.Split(conn.LocalAddr().String(), ":")[0]
 			fmt.Println("Connection was from: ", value)
@@ -85,9 +100,12 @@ func server(ip string, live chan string, hosts map[string]string) {
 	}
 }
 
+// Global vars for min and max delay as specified in config.txt to avoid passing through multiple functions
 var minDelay int
 var maxDelay int
 
+// Main driver function.
+// Reads input from the user and passes the correct IP_ADDR/PORT combinaition to the server() and unicast_send() functions
 func main() {
 	live := make(chan string)
 	id := os.Args[1]
