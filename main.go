@@ -59,7 +59,7 @@ func unicast_receive(source string, message string) {
 	fmt.Printf("Received %s from process %s, system time is %s\n", message, source, time.Now().Format(time.UnixDate))
 }
 
-func server(ip string, live chan string) {
+func server(ip string, live chan string, hosts map[string]string) {
 	l, err := net.Listen("tcp", ip)
 	check(err)
 	defer l.Close()
@@ -71,7 +71,17 @@ func server(ip string, live chan string) {
 		buf := make([]byte, 1024)
 		len, err := conn.Read(buf)
 		check(err)
-		unicast_receive(conn.RemoteAddr().String(), string(buf[:len]))
+		value := strings.Split(conn.RemoteAddr().String(), ":")[0]
+		var clientId string
+		for key := range hosts {
+			fmt.Println(value)
+			port := strings.Split(hosts[key], ":")[0]
+			fmt.Println(port)
+			if port == value {
+				clientId = key
+			}
+		}
+		go unicast_receive(clientId, string(buf[:len]))
 	}
 }
 
@@ -86,7 +96,7 @@ func main() {
 	maxDelay, _ = strconv.Atoi(max)
 	fmt.Println(minDelay, maxDelay, hosts, ids)
 	myIp := hosts[id]
-	go server(myIp, live)
+	go server(myIp, live, hosts)
 	<-live
 	fmt.Printf("Process %s live at %s\n", id, myIp)
 	fmt.Println("Press enter once all hosts are live.")
@@ -98,5 +108,6 @@ func main() {
 		cmd := in.Text()
 		cmdSections := strings.Split(cmd, " ")
 		go unicast_send(hosts[cmdSections[1]], cmdSections[2], cmdSections[1])
+		fmt.Println(hosts)
 	}
 }
