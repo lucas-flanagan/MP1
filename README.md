@@ -6,11 +6,11 @@ The user may then create TCP clients used to communicate with separate manually-
 <br>
 Files contained in this repository include:<br>
 ```
-  ..main.go     : the main executable used to run the program<br>
-  ..config.txt  : the configuration text file used to specifiy IP & Ports to listen on / connect to.<br>
-  ..go.mod      : module path. not utilized due to having only one exectuable currently <br>
-  ..README.md   : this file. contains documentation<br>
-  ..example.png   : example program execution screenshot with 3 processes<br>
+  ..main.go     : the main executable used to run the program
+  ..config.txt  : the configuration text file used to specifiy IP & Ports to listen on / connect to.
+  ..go.mod      : module path. not utilized due to having only one exectuable currently 
+  ..README.md   : this file. contains documentation
+  ..example.png   : example program execution screenshot with 3 processes
   ```
  ## Usage
   1. Ensure that the IP addresses specified in config.txt have routes. In other words, verify that you are able to ping them.
