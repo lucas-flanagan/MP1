@@ -10,8 +10,7 @@ Files contained in this repository include:<br>
   ..config.txt  : the configuration text file used to specifiy IP & Ports to listen on / connect to.<br>
   ..go.mod      : module path. not utilized due to having only one exectuable currently <br>
   ..README.md   : this file. contains documentation<br>
-  ..\images<br>
-  ....example   : example program execution screenshot with 3 processes<br>
+  ..example.png   : example program execution screenshot with 3 processes<br>
   ```
  ## Usage
   1. Ensure that the IP addresses specified in config.txt have routes. In other words, verify that you are able to ping them.
