@@ -71,17 +71,17 @@ func server(ip string, live chan string, hosts map[string]string) {
 		buf := make([]byte, 1024)
 		len, err := conn.Read(buf)
 		check(err)
-		value := strings.Split(conn.RemoteAddr().String(), ":")[0]
-		var clientId string
-		for key := range hosts {
-			fmt.Println(value)
-			port := strings.Split(hosts[key], ":")[0]
-			fmt.Println(port)
-			if port == value {
-				clientId = key
-			}
-		}
-		go unicast_receive(clientId, string(buf[:len]))
+		/*
+			value := strings.Split(conn.LocalAddr().String(), ":")[0]
+			fmt.Println("Connection was from: ", value)
+			var clientId string
+			for key := range hosts {
+				ip := strings.Split(hosts[key], ":")[0]
+				if ip == value {
+					clientId = key
+				}
+			} */
+		go unicast_receive(conn.RemoteAddr().String(), string(buf[:len]))
 	}
 }
 
@@ -108,6 +108,5 @@ func main() {
 		cmd := in.Text()
 		cmdSections := strings.Split(cmd, " ")
 		go unicast_send(hosts[cmdSections[1]], cmdSections[2], cmdSections[1])
-		fmt.Println(hosts)
 	}
 }
