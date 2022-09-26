@@ -33,7 +33,7 @@ The following functionality is commented out within main.go:<br>
 			} */
 ```
 
-**This code would allow the unicast_receive message to display the "from process \<ID\>" value. Unfortunately this does not work when testing locally on my device (MacOS Catalina) as conn.RemoteAddr() will always return the process' specified localhost value. The above code would work for statically allocated IP addresses present on multiple devices communicating within different subnets. It is possible that the functionality is different on other operating systems who have separate techniques for routing localhost addresses. I have chosen instead to display the raw RemoteAddr() value containing the localhost IP and port the client is connecting from. 1.1.1.1 has been routed locally in the below example.**
+**This code would allow the unicast_receive message to display the "from process \<ID\>" value. Unfortunately this does not work when testing locally on my device (MacOS Catalina) as conn.RemoteAddr() will always return the process' specified localhost value. The above code would work for statically allocated IP addresses present on multiple devices communicating within different subnets. It is possible that the functionality is different on other operating systems who have separate techniques for routing localhost addresses. I have chosen instead to display the raw RemoteAddr() value containing the localhost IP and port from which the 'client' is connecting**
 
 ## Example
 
